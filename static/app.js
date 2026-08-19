@@ -430,7 +430,7 @@ async function submitDecision() {
     const data=await r.json();
     fb.className=`gate-feedback ${DECISION_RESULT[action].cls}`;
     fb.textContent=data.is_override ? `Decision overridden to ${action.toUpperCase()}. Override #${data.total_decisions-1} recorded.` : DECISION_RESULT[action].msg;
-    lockGate(action, rationale||null, new Date().toISOString());
+    lockGate(action, rationale||null, new Date().toISOString(), data.logged.reviewer);
     // Refresh history
     const hd=await (await fetch(`/api/decision/${caseId}`)).json();
     if (hd.history && hd.history.length>1) showDecisionHistory(hd.history);
