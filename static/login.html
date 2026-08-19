@@ -1,0 +1,29 @@
+<!-- Login overlay — injected into index.html by app.js -->
+<div id="login-overlay" class="login-overlay">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-icon">⚑</div>
+      <h1>PA Intake Workflow Agent</h1>
+      <p>UHC Tech · AI Transformation · Cohort 5 Capstone</p>
+    </div>
+    <div class="login-body">
+      <label for="login-user">Username</label>
+      <input type="text" id="login-user" placeholder="e.g. judge" autocomplete="username" autofocus>
+      <label for="login-pass">Password</label>
+      <input type="password" id="login-pass" placeholder="Password" autocomplete="current-password">
+      <button id="btn-login" class="btn-login" onclick="doLogin()">Sign In</button>
+      <div id="login-error" class="login-error"></div>
+      <div class="login-hint">
+        <strong>Demo accounts:</strong>
+        <table class="login-accounts">
+          <tr><td><code>judge</code></td><td><code>capstone2026</code></td><td>Evaluator</td></tr>
+          <tr><td><code>dr.sharma</code></td><td><code>reviewer123</code></td><td>Senior Clinical Reviewer</td></tr>
+          <tr><td><code>admin.jones</code></td><td><code>admin456</code></td><td>Operations Manager</td></tr>
+        </table>
+        <p style="margin:8px 0 0;font-size:11px;color:#6B7A89;">
+          Production: SSO / LDAP / Okta integration. Demo: in-memory sessions.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

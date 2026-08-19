@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PA Intake Workflow Agent — UHC Tech AI Transformation</title>
+<meta name="description" content="AI-assisted prior authorization intake triage with a mandatory human approval gate. Synthetic data only.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B2A4A'/%3E%3Cpath d='M8 16.5l5 5 11-11' stroke='%2321C3CE' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/style.css?v=8">
+</head>
+<body>
+
+  <!-- ── Login overlay ─────────────────────────────────────────────── -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-header-card">
+        <div class="login-icon">⚑</div>
+        <h1>PA Intake Workflow Agent</h1>
+        <p>UHC Tech &middot; AI Transformation &middot; Cohort 5 Capstone</p>
+      </div>
+      <div class="login-body">
+        <label for="login-user">Username</label>
+        <input type="text" id="login-user" placeholder="Enter username" autocomplete="username">
+        <label for="login-pass">Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password">
+          <span class="toggle-pass" id="toggle-pass" title="Show password">👁</span>
+        </div>
+        <button id="btn-login" class="btn-primary" style="width:100%;margin-top:8px">Sign In</button>
+        <div id="login-error" class="login-error"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── App shell (hidden until logged in) ────────────────────────── -->
+  <div id="app-shell" hidden>
+
+    <header class="clinical-header">
+      <div class="header-inner">
+        <div>
+          <h1>PA Intake Workflow Agent</h1>
+          <p>UHC Tech &middot; AI Transformation &middot; CTO Office &middot; Cohort 5 Capstone &middot; Synthetic / de-identified data only</p>
+        </div>
+        <div class="header-right">
+          <nav class="header-nav">
+            <button class="nav-btn active" data-tab="workflow">Workflow</button>
+            <button class="nav-btn" data-tab="scenarios">Scenario Guide</button>
+            <button class="nav-btn" data-tab="metrics">Metrics</button>
+          </nav>
+          <div class="user-badge" id="user-badge"></div>
+          <button id="btn-reset-data" class="btn-reset" title="Clear all run data and start fresh">Reset All Data</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+
+      <!-- ═══ TAB: Workflow ═══════════════════════════════════════════ -->
+      <div id="tab-workflow" class="tab-content active">
+
+        <section class="case-bar">
+          <div class="case-picker">
+            <label for="case-select">PA Case</label>
+            <select id="case-select"></select>
+          </div>
+          <div id="case-meta" class="case-meta"></div>
+        </section>
+
+        <div id="scenario-hint" class="scenario-hint" hidden></div>
+
+        <section class="stepper-strip" id="stepper-strip"></section>
+
+        <section class="panel">
+          <h2>Intake Packet</h2>
+          <details class="raw-json" id="intake-details" open>
+            <summary>Raw case data</summary>
+            <pre id="intake-json"></pre>
+          </details>
+        </section>
+
+        <section class="panel">
+          <details class="custom-case" id="custom-case">
+            <summary>Try your own case</summary>
+            <div class="custom-body">
+              <p class="custom-help">
+                Edit the packet below and submit. Loaded with a copy of the selected case —
+                try rewriting <code>clinical_notes</code> to describe an emergency while leaving
+                <code>urgency_flag</code> on <code>routine</code>, or blanking a required field.
+              </p>
+              <textarea id="custom-json" rows="14" spellcheck="false"></textarea>
+              <label class="attest">
+                <input type="checkbox" id="custom-attest">
+                <span>I confirm this packet contains <strong>synthetic or de-identified data only</strong>
+                — no PHI and no production data.</span>
+              </label>
+              <div class="custom-actions">
+                <button id="btn-reset-custom" class="btn-secondary">Reload from selected case</button>
+                <button id="btn-submit-custom" class="btn-primary" disabled>Submit &amp; select</button>
+              </div>
+              <div id="custom-feedback" class="gate-feedback"></div>
+              <p class="custom-note">
+                Submitted cases are held <strong>in memory only</strong> — never written to disk.
+                Cleared on server restart. Attestation, payload size and case count enforced server-side.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <div class="run-row">
+          <button id="run-btn" class="btn-primary btn-run">&#9654; Run PA Agent</button>
+          <span id="run-status" class="run-status"></span>
+        </div>
+
+        <section class="kpi-row" id="kpi-row" hidden>
+          <div class="kpi-card" id="kpi-completeness"><div class="kpi-label">Completeness</div><div class="kpi-value">—</div></div>
+          <div class="kpi-card" id="kpi-urgency"><div class="kpi-label">AI Urgency</div><div class="kpi-value">—</div></div>
+          <div class="kpi-card" id="kpi-match"><div class="kpi-label">Urgency Match</div><div class="kpi-value">—</div></div>
+          <div class="kpi-card" id="kpi-sla"><div class="kpi-label">SLA</div><div class="kpi-value">—</div></div>
+          <div class="kpi-card" id="kpi-latency"><div class="kpi-label">Pipeline</div><div class="kpi-value">—</div></div>
+        </section>
+
+        <section class="panel" id="steps-panel" hidden>
+          <h2>Workflow Steps</h2>
+          <div id="steps-container"></div>
+        </section>
+
+        <section class="human-gate" id="human-gate" hidden>
+          <p class="gate-title">&#9873; Human Approval Gate — <span id="gate-status">PENDING</span></p>
+          <div class="gate-body">
+            <strong>Approver role:</strong> Senior Clinical Reviewer<br>
+            <strong>Note:</strong> No authorization decision is made without explicit human approval.
+          </div>
+          <div class="gate-actions">
+            <label for="decision-select" class="gate-label">Reviewer decision</label>
+            <select id="decision-select">
+              <option value="">— Select a decision —</option>
+              <option value="approve">Approve &amp; Route</option>
+              <option value="deny">Deny with Rationale</option>
+              <option value="hold">Hold — Request Info</option>
+            </select>
+            <textarea id="decision-rationale" rows="2"
+                      placeholder="Rationale (required for Deny, optional otherwise)"></textarea>
+            <button id="btn-submit-decision" class="btn-submit-decision" disabled>Submit decision</button>
+          </div>
+          <div id="gate-feedback" class="gate-feedback"></div>
+          <button id="btn-override" class="btn-override" hidden>&#x21bb; Override Decision</button>
+          <div id="decision-history" class="decision-history" hidden></div>
+        </section>
+
+        <div class="export-row" id="export-row" hidden>
+          <button id="btn-export" class="btn-secondary">⬇ Export Memo as PDF</button>
+        </div>
+
+        <section class="panel" id="audit-panel" hidden>
+          <div id="audit-summary" class="audit-summary"></div>
+          <details class="raw-json">
+            <summary>Full Audit Trail (all AI inputs/outputs)</summary>
+            <pre id="audit-json"></pre>
+          </details>
+        </section>
+
+      </div>
+
+      <!-- ═══ TAB: Scenario Guide ════════════════════════════════════ -->
+      <div id="tab-scenarios" class="tab-content">
+        <section class="panel">
+          <h2>Scenario Test Matrix</h2>
+          <p class="scenario-intro">
+            Each bundled case tests a specific control or behaviour. Click a scenario to see
+            what to run and what to verify. Cases are colour-coded by their
+            <strong>declared</strong> urgency — mismatches between declared and assessed are
+            the point of several tests.
+          </p>
+          <div id="scenario-grid" class="scenario-grid"></div>
+        </section>
+      </div>
+
+      <!-- ═══ TAB: Metrics ═══════════════════════════════════════════ -->
+      <div id="tab-metrics" class="tab-content">
+        <section class="panel">
+          <h2>Pipeline Metrics</h2>
+          <p class="metrics-intro" id="metrics-intro">
+            Run cases from the Workflow tab to populate metrics. All data is in-memory and resets on server restart.
+          </p>
+          <div id="metrics-kpis" class="metrics-kpis" hidden></div>
+          <div id="metrics-charts" class="metrics-charts" hidden></div>
+          <div id="metrics-history" hidden>
+            <h3>Run History</h3>
+            <div class="history-table-wrap">
+              <table id="history-table" class="history-table">
+                <thead><tr>
+                  <th>Run ID</th><th>Case</th><th>Declared</th><th>Assessed</th>
+                  <th>Match</th><th>Queue</th><th>Human Gate</th><th>Latency</th>
+                </tr></thead>
+                <tbody id="history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <p class="disclaimer">
+        <strong>Data:</strong> All cases are synthetic / de-identified. No PHI. &middot;
+        <strong>AI:</strong> Claude Sonnet 4.6 for steps 2, 3, 4. Steps 1, 5, 6 are deterministic. &middot;
+        <strong>Human-in-loop:</strong> No authorization decision without explicit reviewer action.
+      </p>
+
+    </main>
+  </div>
+
+<script src="/static/app.js?v=8"></script>
+</body>
+</html>
