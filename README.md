@@ -1,8 +1,11 @@
 # PA Intake Workflow Agent
 
-**UHC Tech · AI Transformation · CTO Office — Cohort 5 Capstone**
-Track 2: Prior Authorization Intake Workflow Agent
+**UHC Tech · AI Transformation · CTO Office — Cohort 5 Capstone** Track 2: Prior Authorization Intake Workflow Agent
 Candidate: Jayanth Dolai
+
+## Demo
+
+[▶ Watch Demo](https://github.com/demonjd2026-afk/pa-intake-workflow-agent/releases/download/v1.0/AI.Prior.Authorization.Intake.Workflow.Demo.mp4)
 
 ## What this is
 
@@ -43,7 +46,7 @@ without explicit reviewer action.
 
 ## Setup (local)
 
-```bash
+```
 python3 -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -51,17 +54,17 @@ cp .env.example .env             # then open .env and paste your Anthropic API k
 python main.py
 ```
 
-Open **http://127.0.0.1:8000** in your browser.
+Open **<http://127.0.0.1:8000>** in your browser.
 
 ### Reviewer login
 
 The application requires authentication. Three accounts are available:
 
-| Username      | Password       | Name              | Role                         |
-|---------------|----------------|-------------------|------------------------------|
-| `judge`       | `capstone2026` | Sarah Mitchell    | Clinical Review Lead         |
-| `dr.kapoor`   | `reviewer123`  | Dr. Meera Kapoor  | Senior Clinical Reviewer     |
-| `admin.cole`  | `admin456`     | Ryan Cole         | Clinical Operations Manager  |
+| Username     | Password       | Name             | Role                        |
+| ------------ | -------------- | ---------------- | --------------------------- |
+| `judge`      | `capstone2026` | Sarah Mitchell   | Clinical Review Lead        |
+| `dr.kapoor`  | `reviewer123`  | Dr. Meera Kapoor | Senior Clinical Reviewer    |
+| `admin.cole` | `admin456`     | Ryan Cole        | Clinical Operations Manager |
 
 Every run and every decision is tagged with the logged-in reviewer's name
 and role. Decisions can be overridden — all previous decisions are preserved
@@ -69,8 +72,7 @@ in the audit trail.
 
 ### API key
 
-The app reads `ANTHROPIC_API_KEY` from a `.env` file in the project root.
-`.env` is gitignored so the key is never committed. An exported environment
+The app reads `ANTHROPIC_API_KEY` from a `.env` file in the project root. `.env` is gitignored so the key is never committed. An exported environment
 variable takes precedence, so hosted platforms can inject the key without
 changing code.
 
@@ -92,7 +94,7 @@ inactivity — first load after sleep takes 30–60 seconds.
 
 ## Evaluation suite
 
-```bash
+```
 python evals/run_evals.py                  # offline — no API key needed
 python evals/run_evals.py --live           # + one live model sample per case
 python evals/run_evals.py --live --runs 3  # + variance across 3 samples
@@ -111,18 +113,18 @@ an injected instruction and never emit an authorization verdict.
 
 All 10 cases in `data/sample_cases.json` are **fully synthetic**. No PHI.
 
-| Case | Scenario | What it proves |
-|---|---|---|
-| PA-2026-001 | Complete, correctly routine | Clean baseline — only case that needs no human gate |
-| PA-2026-002 | Two required fields blank | Field check catches missing data |
-| PA-2026-003 | Correctly declared urgent | Middle routing tier (4h SLA) |
-| PA-2026-004 | All fields present, thin note | AI review catches inadequate documentation |
-| PA-2026-005 | ICU sepsis, correctly STAT | Top tier, 1h SLA, mandatory escalation |
-| PA-2026-006 | Surgical emergency filed as routine | **Under-triage caught** — 72h queue becomes 1h |
-| PA-2026-007 | Screening colonoscopy filed as STAT | **Over-triage caught** — downgrade needs sign-off |
-| PA-2026-008 | Injected instructions in the note | **Input safety** — agent refuses to be redirected |
-| PA-2026-009 | Near-empty submission | Bulk missing fields — completeness stress test |
-| PA-2026-010 | Symptomatic GI bleed, correctly urgent | Validates real urgency without over-escalating |
+| Case        | Scenario                               | What it proves                                      |
+| ----------- | -------------------------------------- | --------------------------------------------------- |
+| PA-2026-001 | Complete, correctly routine            | Clean baseline — only case that needs no human gate |
+| PA-2026-002 | Two required fields blank              | Field check catches missing data                    |
+| PA-2026-003 | Correctly declared urgent              | Middle routing tier (4h SLA)                        |
+| PA-2026-004 | All fields present, thin note          | AI review catches inadequate documentation          |
+| PA-2026-005 | ICU sepsis, correctly STAT             | Top tier, 1h SLA, mandatory escalation              |
+| PA-2026-006 | Surgical emergency filed as routine    | **Under-triage caught** — 72h queue becomes 1h      |
+| PA-2026-007 | Screening colonoscopy filed as STAT    | **Over-triage caught** — downgrade needs sign-off   |
+| PA-2026-008 | Injected instructions in the note      | **Input safety** — agent refuses to be redirected   |
+| PA-2026-009 | Near-empty submission                  | Bulk missing fields — completeness stress test      |
+| PA-2026-010 | Symptomatic GI bleed, correctly urgent | Validates real urgency without over-escalating      |
 
 The **Scenario Guide** tab in the app maps each case to what it tests and
 what to verify in the output.
