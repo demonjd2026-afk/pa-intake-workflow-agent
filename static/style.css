@@ -35,7 +35,7 @@ body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-sys
 .toggle-pass { position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:16px; user-select:none; line-height:1; }
 
 /* ── Header ────────────────────────────────────────────────────────────── */
-.clinical-header { background:var(--navy); padding:0; border-left:5px solid var(--teal); }
+.clinical-header { background:var(--navy); padding:0; border-left:5px solid var(--teal); position:sticky; top:0; z-index:100; }
 .header-inner { max-width:1100px; margin:0 auto; padding:16px 24px 0; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; }
 .clinical-header h1 { color:#fff; font-size:18px; font-weight:600; margin:0; letter-spacing:-0.2px; }
 .clinical-header p { color:#9FB4C8; font-size:11px; margin:3px 0 0; }
@@ -302,6 +302,26 @@ h3 { font-size:14px; font-weight:600; margin:18px 0 10px; }
 .history-table th { text-align:left; padding:8px 10px; background:var(--bg); color:var(--text-muted); font-size:10px; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; border-bottom:2px solid var(--border); }
 .history-table td { padding:8px 10px; border-bottom:1px solid var(--border); color:var(--text); font-variant-numeric:tabular-nums; }
 .history-table tr:hover td { background:#F7FAFB; }
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* Design Notes                                                          */
+/* ═══════════════════════════════════════════════════════════════════════ */
+.notes-intro { font-size:13px; color:var(--text-muted); margin:0 0 16px; }
+.notes-section { margin-bottom:20px; }
+.notes-heading { font-size:13px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--teal); }
+.notes-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.notes-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:14px 16px; }
+.nc-title { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.nc-body { font-size:12.5px; color:#475569; line-height:1.6; }
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/* Summary                                                               */
+/* ═══════════════════════════════════════════════════════════════════════ */
+.summary-section { margin-bottom:20px; }
+.summary-heading { font-size:13px; font-weight:700; color:var(--navy); margin:0 0 8px; padding-bottom:4px; border-bottom:2px solid var(--teal); display:inline-block; }
+.summary-list { margin:0; padding-left:20px; font-size:13px; line-height:1.8; color:var(--text); }
+.summary-list li { margin-bottom:6px; }
+.summary-list strong { color:var(--navy); }
 
 @media (max-width:768px) {
   .kpi-row { grid-template-columns:repeat(2,1fr); }

@@ -46,6 +46,7 @@
             <button class="nav-btn active" data-tab="workflow">Workflow</button>
             <button class="nav-btn" data-tab="scenarios">Scenario Guide</button>
             <button class="nav-btn" data-tab="metrics">Metrics</button>
+            <button class="nav-btn" data-tab="summary">Summary</button>
           </nav>
           <div class="user-badge" id="user-badge"></div>
           <button id="btn-reset-data" class="btn-reset" title="Clear all run data and start fresh">Reset All Data</button>
@@ -196,6 +197,43 @@
               </table>
             </div>
           </div>
+        </section>
+      </div>
+
+      <!-- ═══ TAB: Summary ═════════════════════════════════════════ -->
+      <div id="tab-summary" class="tab-content">
+        <section class="panel">
+          <h2>Summary</h2>
+
+          <div class="summary-section">
+            <h3 class="summary-heading">Build Decisions</h3>
+            <ul class="summary-list">
+              <li><strong>3 AI + 3 rule-based steps</strong></li>
+              <li><strong>Input safety before any AI call</strong></li>
+              <li><strong>Urgency match recalculated by code</strong></li>
+              <li><strong>Human always decides</strong></li>
+            </ul>
+          </div>
+
+          <div class="summary-section">
+            <h3 class="summary-heading">Tradeoffs</h3>
+            <ul class="summary-list">
+              <li><strong>Memo is a template, not AI</strong></li>
+              <li><strong>In-memory only, no disk</strong></li>
+            </ul>
+          </div>
+
+          <div class="summary-section">
+            <h3 class="summary-heading">Next Iteration</h3>
+            <ul class="summary-list">
+              <li><strong>RAG for policy matching</strong></li>
+              <li><strong>Output guardrails</strong></li>
+              <li><strong>SSO integration</strong></li>
+              <li><strong>Persistent storage with encryption</strong></li>
+              <li><strong>Provider notifications</strong></li>
+            </ul>
+          </div>
+
         </section>
       </div>
 
